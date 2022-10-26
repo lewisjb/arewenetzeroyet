@@ -5,6 +5,11 @@
             body {
                 margin: 0;
                 padding: 0;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            a, a:hover, a:active, a:visited {
+                color: inherit;
             }
 
             .wrapper {
@@ -14,9 +19,22 @@
                 justify-content: center;
             }
 
+            .centered {
+                padding: 15vmin;
+            }
+
             .answer {
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 90pt;
+                font-size: 30vmin;
+            }
+
+            .info {
+                font-size: 3vmin;
+            }
+            
+            .shoutout {
+                position: absolute;
+                right: 0;
+                bottom: 0;
             }
         </style>
         <script>
@@ -49,7 +67,7 @@
                 getCountryCode().then(getEmissionsForCountry).then(getColoursForEmissions).then(([bg, fg]) => {
                     requestAnimationFrame(() => {
                         document.querySelector('.wrapper').style.background = bg;
-                        document.querySelector('.answer').style.color = fg;
+                        document.querySelector('.wrapper').style.color = fg;
                     });
                 });
             }
@@ -57,7 +75,11 @@
     </head>
     <body onload="setBackground()">
         <div class="wrapper">
-            <div class="answer">No</div>
+            <div class="centered">
+                <div class="answer">No</div>
+                <div class="info">The darker this page, the more your country emitted in the last day.</div>
+            </div>
+            <div class="shoutout">Powered by: <a href="https://emissions-api.org/">https://emissions-api.org/</a></div>
         </div>
     </body>
 </html>
