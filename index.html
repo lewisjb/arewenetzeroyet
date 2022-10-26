@@ -19,8 +19,43 @@
                 font-size: 90pt;
             }
         </style>
+        <script>
+            async function getCountryCode() {
+                const response = await fetch('https://api.country.is/');
+                return (await response.json())['country'];
+            }
+
+            async function getEmissionsForCountry(countryCode) {
+                const today = new Date();
+                const yesterday = new Date();
+                yesterday.setDate(today.getDate() - 1);
+                const dayBefore = new Date();
+                dayBefore.setDate(today.getDate() - 2);
+                
+                const formatDate = (d) => d.toISOString().split('T')[0];
+
+                const response = await fetch(`https://api.v2.emissions-api.org/api/v2/carbonmonoxide/average.json?country=${countryCode}&begin=${formatDate(dayBefore)}&end=${formatDate(yesterday)}`);
+
+                return (await response.json())[0]['average'];
+            }
+
+            function getColoursForEmissions(emissions) {
+                const brightness = Math.min(Math.round((1 - emissions / 0.03) * 255), 255);
+                const textColour = (brightness <= 100) ? 'white' : 'black';
+                return [`rgb(${brightness}, ${brightness}, ${brightness})`, textColour];
+            }
+
+            function setBackground() {
+                getCountryCode().then(getEmissionsForCountry).then(getColoursForEmissions).then(([bg, fg]) => {
+                    requestAnimationFrame(() => {
+                        document.querySelector('.wrapper').style.background = bg;
+                        document.querySelector('.answer').style.color = fg;
+                    });
+                });
+            }
+        </script>
     </head>
-    <body>
+    <body onload="setBackground()">
         <div class="wrapper">
             <div class="answer">No</div>
         </div>
